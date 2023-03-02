@@ -19,6 +19,8 @@ jobs:
         key: ${{ secrets.SERVER_SSH_KEY }}
         script: |
           cd ${{ secrets.DEPLOY_LOCATION }}
+          export NVM_DIR=~/.nvm
+          source ~/.nvm/nvm.sh
           git pull
           yarn
           yarn build
