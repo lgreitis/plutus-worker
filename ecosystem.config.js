@@ -1,10 +1,10 @@
 module.exports = {
   apps: [
     {
-      name: "dev",
+      name: "Node",
       script: "yarn start",
       exec_mode: "fork",
-      instances: 4,
+      instances: 1,
       autorestart: true,
       watch: false,
       merge_logs: true,
