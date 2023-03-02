@@ -1,0 +1,23 @@
+{
+  "parser": "@typescript-eslint/parser",
+  "parserOptions": {
+    "project": "./tsconfig.json"
+  },
+  "plugins": ["@typescript-eslint", "unicorn"],
+  "extends": [
+    "plugin:unicorn/recommended",
+    "plugin:@typescript-eslint/recommended"
+  ],
+  "rules": {
+    "unicorn/no-null": 0,
+    "unicorn/prefer-module": 0,
+    "unicorn/prefer-top-level-await": 0,
+    "unicorn/no-process-exit": 0,
+    "unicorn/filename-case": [
+      "error",
+      {
+        "case": "camelCase"
+      }
+    ]
+  }
+}
