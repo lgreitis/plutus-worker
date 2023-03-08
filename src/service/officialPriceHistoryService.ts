@@ -52,7 +52,7 @@ const requestWithTimeout = (
   parameter: string
 ): Promise<string> => {
   return new Promise((resolve, reject) => [
-    timeout(makeRequestWithProxy(proxy, parameter), 11_000)
+    timeout(makeRequestWithProxy(proxy, parameter), 10_000)
       .then((result) => resolve(result))
       .catch((error) => {
         reject(error);

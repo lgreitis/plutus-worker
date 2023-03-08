@@ -38,6 +38,7 @@ const emptyOfficialPricePoolChecker = () => {
           },
         },
       });
+
       for await (const item of items) {
         await officialPricePool.add(
           `Get official price history: ${item.marketHashName}`,
