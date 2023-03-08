@@ -23,5 +23,6 @@ jobs:
           source ~/.nvm/nvm.sh
           git pull
           yarn
+          yarn prisma generate
           yarn build
           pm2 reload all
