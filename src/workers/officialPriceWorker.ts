@@ -31,7 +31,7 @@ const main = async () => {
     await toDatabase(result.result, item);
     const duration = intervalToDuration({ start: timeStart, end: new Date() });
     console.log(
-      `Success: ${result.result.length}, took: ${formatDuration(
+      `Success: ${item.marketHashName}, took: ${formatDuration(
         duration
       )}, with: ${JSON.stringify(result.proxy)}`
     );

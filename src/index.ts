@@ -40,7 +40,7 @@ const emptyOfficialPricePoolChecker = () => {
       });
       for await (const item of items) {
         await officialPricePool.add(
-          `get item ${item.marketHashName}`,
+          `Get official price history: ${item.marketHashName}`,
           { marketHashName: item.marketHashName },
           { attempts: 10 }
         );
