@@ -4,12 +4,15 @@ import prisma from "../config/prisma";
 import { OfficialPricePoolData, SteamHistoryResult } from "../types";
 import ProxyRotationHandler from "../utils/proxyRotationHandler";
 import { Item, Prisma } from "@prisma/client";
+import { formatDuration, intervalToDuration } from "date-fns";
 
 const proxyRotationHandler = new ProxyRotationHandler();
 
 const main = async () => {
   new Worker("officialPrices", async (job: Job<OfficialPricePoolData>) => {
     const { data } = job;
+    const timeStart = new Date();
+
     const result = await fetchItemHistory(
       data.marketHashName,
       proxyRotationHandler
@@ -26,6 +29,12 @@ const main = async () => {
     }
 
     await toDatabase(result.result, item);
+    const duration = intervalToDuration({ start: timeStart, end: new Date() });
+    console.log(
+      `Success: ${result.result.length}, took: ${formatDuration(
+        duration
+      )}, with: ${JSON.stringify(result.proxy)}`
+    );
   });
 };
 
