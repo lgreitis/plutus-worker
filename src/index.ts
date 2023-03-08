@@ -4,8 +4,8 @@ import {
   FastifyAdapter,
 } from "@bull-board/fastify";
 import { Queue } from "bullmq";
-import fastifyConfig from "./config/fastify";
-import prisma from "./config/prisma";
+import prisma from "src/config/prisma";
+import fastifyConfig from "src/config/fastify";
 
 const officialPricePool = new Queue("officialPrices");
 

@@ -1,9 +1,9 @@
 import { HttpsProxyAgent } from "https-proxy-agent";
 import https from "node:https";
 import { timeout } from "promise-timeout";
-import ProxyRotationHandler from "../utils/proxyRotationHandler";
-import { Proxy, SteamHistoryResult } from "../types";
 import { SocksProxyAgent } from "socks-proxy-agent";
+import { Proxy, SteamHistoryResult } from "src/types";
+import ProxyRotationHandler from "src/utils/proxyRotationHandler";
 
 export const fetchItemHistory = async (
   marketHashName: string,

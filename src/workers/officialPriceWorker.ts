@@ -1,10 +1,10 @@
 import { Job, Worker } from "bullmq";
-import { fetchItemHistory } from "../service/officialPriceHistoryService";
-import prisma from "../config/prisma";
-import { OfficialPricePoolData, SteamHistoryResult } from "../types";
-import ProxyRotationHandler from "../utils/proxyRotationHandler";
 import { Item, Prisma } from "@prisma/client";
 import { formatDuration, intervalToDuration } from "date-fns";
+import ProxyRotationHandler from "src/utils/proxyRotationHandler";
+import { OfficialPricePoolData, SteamHistoryResult } from "src/types";
+import { fetchItemHistory } from "src/service/officialPriceHistoryService";
+import prisma from "src/config/prisma";
 
 const proxyRotationHandler = new ProxyRotationHandler();
 
