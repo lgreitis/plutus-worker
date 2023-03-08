@@ -42,7 +42,7 @@ const emptyOfficialPricePoolChecker = () => {
         await officialPricePool.add(
           `Get official price history: ${item.marketHashName}`,
           { marketHashName: item.marketHashName },
-          { attempts: 10 }
+          { attempts: 10, removeOnComplete: { count: 1000 } }
         );
       }
     }
