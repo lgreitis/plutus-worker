@@ -31,7 +31,7 @@ class ProxyRotationHandler {
             stdout
               .toString()
               .replace(/'/g, '"')
-              .replace(/"Cote D"Ivoire"/g, "Cote D'Ivoire")
+              .replace(/"Cote D"Ivoire"/g, `"Cote D'Ivoire"`)
           )
         );
       });
