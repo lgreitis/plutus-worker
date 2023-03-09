@@ -26,7 +26,14 @@ class ProxyRotationHandler {
           return;
         }
 
-        resolve(JSON.parse(stdout.toString().replace(/'/g, '"')));
+        resolve(
+          JSON.parse(
+            stdout
+              .toString()
+              .replace(/'/g, '"')
+              .replace(/"Cote D"Ivoire"/g, "Cote D'Ivoire")
+          )
+        );
       });
     });
   }
