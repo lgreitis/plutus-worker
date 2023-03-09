@@ -118,13 +118,14 @@ model ApiPricingHistory {
 }
 
 model OfficialPricingFetchTime {
-  id           String @id @default(uuid())
-  item         Item   @relation(fields: [itemId], references: [id])
+  id           String   @id @default(uuid())
+  item         Item     @relation(fields: [itemId], references: [id])
   duration     Int
   proxyCountry String
   proxyIp      String
   proxyPort    String
   itemId       String
+  fetchDate    DateTime @default(now())
 }
 
 enum ItemRarity {
