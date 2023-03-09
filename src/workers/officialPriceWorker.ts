@@ -33,7 +33,7 @@ const main = async () => {
 
     await prisma.officialPricingFetchTime.create({
       data: {
-        duration: timeStart.getTime() - Date.now(),
+        duration: Date.now() - timeStart.getTime(),
         proxyCountry: result.proxy.country,
         proxyIp: result.proxy.ip,
         proxyPort: result.proxy.port.toString(),
