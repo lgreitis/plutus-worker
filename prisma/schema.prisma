@@ -71,9 +71,10 @@ model Item {
   icon_small                       String
   officialPricingHistoryUpdateTime DateTime?
 
-  OfficialPricingHistory OfficialPricingHistory[]
-  ApiItemPrice           ApiPricingHistory[]
-  UserItem               UserItem[]
+  OfficialPricingHistory   OfficialPricingHistory[]
+  ApiItemPrice             ApiPricingHistory[]
+  UserItem                 UserItem[]
+  OfficialPricingFetchTime OfficialPricingFetchTime[]
 }
 
 model OfficialPricingHistory {
@@ -114,6 +115,16 @@ model ApiPricingHistory {
   @@index([updateTime])
   @@index([current])
   @@index([itemId])
+}
+
+model OfficialPricingFetchTime {
+  id           String @id @default(uuid())
+  item         Item   @relation(fields: [itemId], references: [id])
+  duration     Int
+  proxyCountry String
+  proxyIp      String
+  proxyPort    String
+  itemId       String
 }
 
 enum ItemRarity {

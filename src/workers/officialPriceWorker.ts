@@ -30,6 +30,17 @@ const main = async () => {
 
     await toDatabase(result.result, item);
     const duration = intervalToDuration({ start: timeStart, end: new Date() });
+
+    await prisma.officialPricingFetchTime.create({
+      data: {
+        duration: timeStart.getTime() - Date.now(),
+        proxyCountry: result.proxy.country,
+        proxyIp: result.proxy.ip,
+        proxyPort: result.proxy.port.toString(),
+        itemId: item.id,
+      },
+    });
+
     console.log(
       `Success: ${item.marketHashName}, took: ${formatDuration(
         duration
