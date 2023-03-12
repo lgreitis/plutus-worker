@@ -87,6 +87,7 @@ model OfficialPricingHistory {
   price  Float
   volume Int
 
+  @@unique([itemId, date])
   @@index([date])
   @@index([itemId])
 }
