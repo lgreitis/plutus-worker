@@ -1,6 +1,6 @@
 generator client {
   provider        = "prisma-client-js"
-  previewFeatures = ["orderByNulls"]
+  previewFeatures = ["orderByNulls", "fullTextSearch"]
 }
 
 datasource db {
@@ -16,6 +16,7 @@ model Account {
   providerAccountId String
   refresh_token     String?
   access_token      String?
+  steamid           String?
   expires_at        Int?
   token_type        String?
   scope             String?
@@ -42,7 +43,16 @@ model User {
   image         String?
   accounts      Account[]
   sessions      Session[]
-  UserItem      UserItem[]
+  Inventory     Inventory?
+}
+
+model Inventory {
+  id String @id @default(uuid())
+
+  UserItem UserItem[]
+
+  User   User   @relation(fields: [userId], references: [id])
+  userId String @unique
 }
 
 model UserItem {
@@ -52,12 +62,13 @@ model UserItem {
   quantity  Int
   notes     String?
 
-  item   Item   @relation(fields: [itemId], references: [id])
-  user   User   @relation(fields: [userId], references: [id])
-  itemId String
-  userId String
+  item        Item      @relation(fields: [itemId], references: [id])
+  Inventory   Inventory @relation(fields: [inventoryId], references: [id], onDelete: Cascade)
+  itemId      String
+  inventoryId String
 
-  @@index([userId])
+  @@unique([inventoryId, itemId])
+  @@index([inventoryId])
 }
 
 model Item {
@@ -71,23 +82,21 @@ model Item {
   icon_small                       String
   officialPricingHistoryUpdateTime DateTime?
 
-  OfficialPricingHistory   OfficialPricingHistory[]
-  ApiItemPrice             ApiPricingHistory[]
-  UserItem                 UserItem[]
-  OfficialPricingFetchTime OfficialPricingFetchTime[]
+  OfficialPricingHistory OfficialPricingHistory[]
+  ApiItemPrice           ApiPricingHistory[]
+  UserItem               UserItem[]
 }
 
 model OfficialPricingHistory {
-  id String @id @default(uuid())
-
-  item   Item   @relation(fields: [itemId], references: [id])
-  itemId String
-
+  id     String   @id @default(uuid())
   date   DateTime
   price  Float
   volume Int
+  item   Item     @relation(fields: [itemId], references: [id])
+  itemId String
 
   @@unique([itemId, date])
+  @@index([itemId, date(sort: Desc)])
   @@index([date])
   @@index([itemId])
 }
@@ -118,15 +127,20 @@ model ApiPricingHistory {
   @@index([itemId])
 }
 
-model OfficialPricingFetchTime {
-  id           String   @id @default(uuid())
-  item         Item     @relation(fields: [itemId], references: [id])
-  duration     Int
-  proxyCountry String
-  proxyIp      String
-  proxyPort    String
-  itemId       String
-  fetchDate    DateTime @default(now())
+model FetchTime {
+  id                String            @id @default(uuid())
+  duration          Int
+  lastProxyDuration Int?
+  proxyCountry      String
+  proxyIp           String
+  proxyPort         String
+  fetchDate         DateTime          @default(now())
+  category          FetchTimeCategory
+}
+
+enum FetchTimeCategory {
+  OfficialPricingHistory
+  Inventory
 }
 
 enum ItemRarity {

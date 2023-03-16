@@ -3,15 +3,19 @@ import { Item, Prisma } from "@prisma/client";
 import { formatDuration, intervalToDuration } from "date-fns";
 import ProxyRotationHandler from "src/utils/proxyRotationHandler";
 import { OfficialPricePoolData, SteamHistoryResult } from "src/types";
-import { fetchItemHistory } from "src/service/officialPriceHistoryService";
+import {
+  fetchItemHistory,
+  officialPriceHistoryToDatabase,
+} from "src/service/officialPriceHistoryService";
 import prisma from "src/config/prisma";
+import { createStatisticEntry } from "src/utils/statistics";
 
 const proxyRotationHandler = new ProxyRotationHandler();
 
 const main = async () => {
   new Worker("officialPrices", async (job: Job<OfficialPricePoolData>) => {
     const { data } = job;
-    const timeStart = new Date();
+    const startTime = new Date();
 
     const result = await fetchItemHistory(
       data.marketHashName,
@@ -28,17 +32,14 @@ const main = async () => {
       return;
     }
 
-    await toDatabase(result.result, item);
-    const duration = intervalToDuration({ start: timeStart, end: new Date() });
+    await officialPriceHistoryToDatabase(result.result, item);
+    const duration = intervalToDuration({ start: startTime, end: new Date() });
 
-    await prisma.officialPricingFetchTime.create({
-      data: {
-        duration: Date.now() - timeStart.getTime(),
-        proxyCountry: result.proxy.country,
-        proxyIp: result.proxy.ip,
-        proxyPort: result.proxy.port.toString(),
-        itemId: item.id,
-      },
+    await createStatisticEntry({
+      category: "OfficialPricingHistory",
+      proxy: result.proxy,
+      lastProxyDuration: result.lastProxyDuration,
+      startTime: startTime,
     });
 
     console.log(
@@ -46,30 +47,6 @@ const main = async () => {
         duration
       )}, with: ${JSON.stringify(result.proxy)}`
     );
-  });
-};
-
-const toDatabase = async (data: SteamHistoryResult[], item: Item) => {
-  const batch: Prisma.OfficialPricingHistoryCreateManyInput[] = [];
-
-  for (const itemHistory of data) {
-    batch.push({
-      itemId: item.id,
-      date: new Date(itemHistory[0]),
-      price: itemHistory[1],
-      volume: Number.parseInt(itemHistory[2]),
-    });
-  }
-
-  await prisma.officialPricingHistory
-    .createMany({ data: batch, skipDuplicates: true })
-    .catch((error) => {
-      console.log(error);
-    });
-
-  await prisma.item.update({
-    where: { id: item.id },
-    data: { officialPricingHistoryUpdateTime: new Date() },
   });
 };
 
