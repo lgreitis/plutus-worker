@@ -58,6 +58,10 @@ class ProxyRotationHandler {
   async getCurrentProxy(): Promise<Proxy> {
     return this.currentProxy || this.getNewProxy();
   }
+
+  clearProxies() {
+    this.proxyList = [];
+  }
 }
 
 export default ProxyRotationHandler;

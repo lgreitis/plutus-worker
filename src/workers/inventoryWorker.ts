@@ -84,6 +84,7 @@ const main = async () => {
 
     await job.updateProgress(100);
 
+    proxyRotationHandler.clearProxies();
     return;
   });
 };
