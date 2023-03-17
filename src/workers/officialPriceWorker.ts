@@ -1,8 +1,7 @@
 import { Job, Worker } from "bullmq";
-import { Item, Prisma } from "@prisma/client";
 import { formatDuration, intervalToDuration } from "date-fns";
 import ProxyRotationHandler from "src/utils/proxyRotationHandler";
-import { OfficialPricePoolData, SteamHistoryResult } from "src/types";
+import { OfficialPricePoolData } from "src/types";
 import {
   fetchItemHistory,
   officialPriceHistoryToDatabase,

@@ -62,13 +62,13 @@ model UserItem {
   quantity  Int
   notes     String?
 
-  item        Item      @relation(fields: [itemId], references: [id])
-  Inventory   Inventory @relation(fields: [inventoryId], references: [id], onDelete: Cascade)
-  itemId      String
-  inventoryId String
+  Item           Item      @relation(fields: [marketHashName], references: [marketHashName])
+  Inventory      Inventory @relation(fields: [inventoryId], references: [id], onDelete: Cascade)
+  marketHashName String
+  inventoryId    String
 
-  @@unique([inventoryId, itemId])
-  @@index([inventoryId])
+  @@unique([inventoryId, marketHashName])
+  @@index([marketHashName])
 }
 
 model Item {

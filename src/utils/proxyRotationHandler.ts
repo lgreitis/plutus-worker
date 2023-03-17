@@ -2,7 +2,7 @@ import { exec } from "node:child_process";
 import { Proxy } from "src/types";
 
 const fetcherCommand =
-  "cd ~/ballyregan && poetry run ballyregan get -o json -l 10";
+  "cd ~/ballyregan && poetry run ballyregan get -o json -l 5";
 
 class ProxyRotationHandler {
   private currentCount: number;

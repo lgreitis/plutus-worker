@@ -1,20 +1,21 @@
 import fastifySwagger from "@fastify/swagger";
 import fastifySwaggerUi from "@fastify/swagger-ui";
+import { TypeBoxTypeProvider } from "@fastify/type-provider-typebox";
 import fastify from "fastify";
 
-const fastifyConfig = async () => {
-  const server = fastify({
-    logger: {
-      transport: {
-        target: "@fastify/one-line-logger",
-        options: {
-          colorize: true,
-        },
+export const fastifyServer = fastify({
+  logger: {
+    transport: {
+      target: "@fastify/one-line-logger",
+      options: {
+        colorize: true,
       },
     },
-  });
+  },
+}).withTypeProvider<TypeBoxTypeProvider>();
 
-  await server.register(fastifySwagger, {
+const fastifyConfig = async () => {
+  await fastifyServer.register(fastifySwagger, {
     mode: "dynamic",
     openapi: {
       info: {
@@ -25,11 +26,11 @@ const fastifyConfig = async () => {
     },
   });
 
-  await server.register(fastifySwaggerUi, {
+  await fastifyServer.register(fastifySwaggerUi, {
     routePrefix: "/documentation",
   });
 
-  return server;
+  return fastifyServer;
 };
 
 export default fastifyConfig;

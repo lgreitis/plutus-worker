@@ -38,9 +38,8 @@ export const fetchInventory = async (
       // fs.writeFileSync("out.json", response.data);
 
       return { result: parsed, lastProxyDuration, proxy };
-    } catch (error) {
+    } catch {
       proxy = await proxyRotationHandler.getNewProxy();
-      console.log(error);
       continue;
     }
   }

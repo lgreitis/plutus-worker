@@ -10,6 +10,11 @@ export interface OfficialPricePoolData {
   marketHashName: string;
 }
 
+export interface InventoryFetchPoolData {
+  userId: string;
+  steamId: string;
+}
+
 export type SteamHistoryResult = [string, number, string];
 
 export interface HttpResult {
