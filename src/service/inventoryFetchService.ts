@@ -4,7 +4,6 @@ import { HttpResult, Proxy, SteamInventoryResult } from "src/types";
 import https from "node:https";
 import { timeout } from "promise-timeout";
 import ProxyRotationHandler from "src/utils/proxyRotationHandler";
-import fs from "node:fs";
 import randomUseragent from "random-useragent";
 
 export const fetchInventory = async (
