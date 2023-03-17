@@ -11,7 +11,7 @@ const main = async () => {
     prefix: "/bull",
   });
   fastify.register(inventoryFetchController);
-  fastify.listen({ port: 3000 });
+  fastify.listen({ port: 3000, host: "*" });
 };
 
 main()
