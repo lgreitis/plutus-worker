@@ -2,11 +2,11 @@ import { Item, Prisma } from "@prisma/client";
 import { HttpsProxyAgent } from "https-proxy-agent";
 import https from "node:https";
 import { timeout } from "promise-timeout";
+import randomUseragent from "random-useragent";
 import { SocksProxyAgent } from "socks-proxy-agent";
 import prisma from "src/config/prisma";
 import { HttpResult, Proxy, SteamHistoryResult } from "src/types";
 import ProxyRotationHandler from "src/utils/proxyRotationHandler";
-import randomUseragent from "random-useragent";
 
 export const fetchItemHistory = async (
   marketHashName: string,

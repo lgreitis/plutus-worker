@@ -1,7 +1,8 @@
-import prisma from "src/config/prisma";
+import inventoryFetchController from "src/api/controllers/inventoryFetch.controller";
+import bullmqConfig from "src/config/bullmq";
 import fastifyConfig from "src/config/fastify";
-import bullmqConfig from "./config/bullmq";
-import inventoryFetchController from "./api/controllers/inventoryFetch.controller";
+import prisma from "src/config/prisma";
+import "src/constants";
 
 const main = async () => {
   const serverAdapter = await bullmqConfig();

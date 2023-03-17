@@ -1,10 +1,10 @@
 import { HttpsProxyAgent } from "https-proxy-agent";
-import { SocksProxyAgent } from "socks-proxy-agent";
-import { HttpResult, Proxy, SteamInventoryResult } from "src/types";
 import https from "node:https";
 import { timeout } from "promise-timeout";
-import ProxyRotationHandler from "src/utils/proxyRotationHandler";
 import randomUseragent from "random-useragent";
+import { SocksProxyAgent } from "socks-proxy-agent";
+import { HttpResult, Proxy, SteamInventoryResult } from "src/types";
+import ProxyRotationHandler from "src/utils/proxyRotationHandler";
 
 export const fetchInventory = async (
   steamID64: string,
