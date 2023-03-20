@@ -102,7 +102,7 @@ const inventoryFetchController = (
           });
         }
 
-        const isDone = !(await job.isActive());
+        const isDone = await job.isCompleted();
         const jobFailed = await job.isFailed();
         const progress = job.progress as number;
 
