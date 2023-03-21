@@ -1,12 +1,13 @@
 import { Prisma } from "@prisma/client";
 import { Job, Worker } from "bullmq";
 import prisma from "src/config/prisma";
+import { INVENTORY_PROXY_STRING } from "src/constants";
 import { fetchInventory } from "src/service/inventoryFetchService";
 import { InventoryFetchPoolData } from "src/types";
 import ProxyRotationHandler from "src/utils/proxyRotationHandler";
 import { createStatisticEntry } from "src/utils/statistics";
 
-const proxyRotationHandler = new ProxyRotationHandler();
+const proxyRotationHandler = new ProxyRotationHandler(INVENTORY_PROXY_STRING);
 
 const main = async () => {
   new Worker("inventoryFetch", async (job: Job<InventoryFetchPoolData>) => {

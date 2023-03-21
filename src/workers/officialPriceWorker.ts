@@ -1,6 +1,7 @@
 import { Job, Worker } from "bullmq";
 import { formatDuration, intervalToDuration } from "date-fns";
 import prisma from "src/config/prisma";
+import { FETCH_PROXY_STRING } from "src/constants";
 import {
   fetchItemHistory,
   officialPriceHistoryToDatabase,
@@ -9,7 +10,7 @@ import { OfficialPricePoolData } from "src/types";
 import ProxyRotationHandler from "src/utils/proxyRotationHandler";
 import { createStatisticEntry } from "src/utils/statistics";
 
-const proxyRotationHandler = new ProxyRotationHandler();
+const proxyRotationHandler = new ProxyRotationHandler(FETCH_PROXY_STRING);
 
 const main = async () => {
   new Worker("officialPrices", async (job: Job<OfficialPricePoolData>) => {

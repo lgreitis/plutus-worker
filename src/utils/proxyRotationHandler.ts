@@ -1,22 +1,21 @@
 import { exec } from "node:child_process";
 import { Proxy } from "src/types";
 
-const fetcherCommand =
-  "cd ~/ballyregan && poetry run ballyregan get -o json -l 10";
-
 class ProxyRotationHandler {
   private currentCount: number;
   private proxyList: Proxy[];
   private currentProxy?: Proxy;
+  private fetcherCommand: string;
 
-  constructor() {
+  constructor(fetcherCommand: string) {
     this.currentCount = 0;
     this.proxyList = [];
+    this.fetcherCommand = fetcherCommand;
   }
 
   private async fetchProxyList(): Promise<Proxy[]> {
     return new Promise((resolve, reject) => {
-      exec(fetcherCommand, (error, stdout, stderr) => {
+      exec(this.fetcherCommand, (error, stdout, stderr) => {
         if (error) {
           reject(error);
           return;
