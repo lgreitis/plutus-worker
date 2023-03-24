@@ -35,7 +35,7 @@ module.exports = {
     },
     {
       name: "SAHW",
-      script: "node dist/workers/apiPriceWOrker.js",
+      script: "node dist/workers/apiPriceWorker.js",
       exec_mode: "fork",
       instances: 1,
       autorestart: true,
