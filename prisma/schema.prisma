@@ -84,6 +84,7 @@ model Item {
   icon                             String
   icon_small                       String
   officialPricingHistoryUpdateTime DateTime?
+  borderColor                      String?
 
   OfficialPricingHistory OfficialPricingHistory[]
   ApiItemPrice           ApiPricingHistory[]
@@ -117,6 +118,8 @@ model ApiPricingHistory {
   safe           Float
   soldLast24h    Float
   soldLast7d     Float
+  soldLast30d    Float
+  soldLast90d    Float
   avgDailyVolume Float?
 
   unstable       Boolean

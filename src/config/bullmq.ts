@@ -7,6 +7,7 @@ import { Queue } from "bullmq";
 import prisma from "./prisma";
 
 export const officialPricePool = new Queue("officialPrices");
+export const apiPriceFetchPool = new Queue("apiPrices");
 export const inventoryFetchPool = new Queue("inventoryFetch");
 
 const bullmqConfig = async () => {
@@ -21,11 +22,20 @@ const bullmqConfig = async () => {
   serverAdapter.setBasePath("/bull");
 
   emptyOfficialPricePoolChecker();
+  await apiPriceFetchPoolCronJob();
 
   return serverAdapter;
 };
 
 export default bullmqConfig;
+
+const apiPriceFetchPoolCronJob = async () => {
+  await apiPriceFetchPool.add(
+    "Fetch info from SteamApis",
+    {},
+    { repeat: { pattern: "0 * * * *" } }
+  );
+};
 
 const emptyOfficialPricePoolChecker = () => {
   setInterval(async () => {
