@@ -83,7 +83,8 @@ export interface SteamApisItem {
       | "LOW_SALES_WEEK"
       | "LOW_SALES_MONTH"
       | "LOW_SALES_3PLUS_MONTHS"
-      | "LOW_SALES_OVERALL";
+      | "LOW_SALES_OVERALL"
+      | false;
     first_seen: number;
   };
   updated_at: number;

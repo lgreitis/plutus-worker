@@ -59,7 +59,7 @@ const main = async () => {
           soldLast90d: apiItem.prices.sold.last_90d,
           avgDailyVolume: apiItem.prices.sold.avg_daily_volume,
           unstable: apiItem.prices.unstable,
-          unstableReason: apiItem.prices.unstable_reason,
+          unstableReason: apiItem.prices.unstable_reason || undefined,
           updateTime: new Date(apiItem.updated_at),
         },
       });
