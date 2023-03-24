@@ -33,5 +33,16 @@ module.exports = {
       output: "./logs/IWaccess.log",
       error: "./logs/IWerror.log",
     },
+    {
+      name: "SAHW",
+      script: "node dist/workers/apiPriceWOrker.js",
+      exec_mode: "fork",
+      instances: 1,
+      autorestart: true,
+      watch: false,
+      merge_logs: true,
+      output: "./logs/SAHWaccess.log",
+      error: "./logs/SAHWerror.log",
+    },
   ],
 };
