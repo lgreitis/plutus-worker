@@ -15,6 +15,7 @@ const bullmqConfig = async () => {
   createBullBoard({
     queues: [
       new BullMQAdapter(officialPricePool),
+      new BullMQAdapter(apiPriceFetchPool),
       new BullMQAdapter(inventoryFetchPool),
     ],
     serverAdapter,
