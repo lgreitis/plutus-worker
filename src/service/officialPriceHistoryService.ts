@@ -153,6 +153,9 @@ export const officialPriceHistoryToDatabase = async (
 
   await prisma.item.update({
     where: { id: item.id },
-    data: { officialPricingHistoryUpdateTime: new Date() },
+    data: {
+      officialPricingHistoryUpdateTime: new Date(),
+      lastPrice: data[data.length - 1][1],
+    },
   });
 };
