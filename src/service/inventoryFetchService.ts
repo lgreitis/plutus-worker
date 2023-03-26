@@ -12,18 +12,19 @@ export const fetchInventory = async (
 ): Promise<{
   result: SteamInventoryResult;
   lastProxyDuration: number;
-  proxy: Proxy;
+  proxy?: Proxy;
 }> => {
-  let proxy = await proxyRotationHandler.getCurrentProxy();
+  // let proxy = await proxyRotationHandler.getCurrentProxy();
+  let proxy;
   let tryWithoutProxy = true;
 
   while (true) {
     try {
       let lastProxyDuration = Date.now();
       const response = await requestWithTimeout(
-        proxy,
         steamID64,
-        tryWithoutProxy
+        tryWithoutProxy,
+        proxy
       );
       lastProxyDuration = Date.now() - lastProxyDuration;
 
@@ -49,21 +50,20 @@ export const fetchInventory = async (
     } catch {
       if (tryWithoutProxy) {
         tryWithoutProxy = false;
-      } else {
-        proxy = await proxyRotationHandler.getNewProxy();
       }
+      proxy = await proxyRotationHandler.getNewProxy();
       continue;
     }
   }
 };
 
 const requestWithTimeout = (
-  proxy: Proxy,
   steamID64: string,
-  noProxy: boolean
+  noProxy: boolean,
+  proxy?: Proxy
 ): Promise<HttpResult> => {
   return new Promise((resolve, reject) => [
-    timeout(makeRequestWithProxy(proxy, steamID64, noProxy), 7000)
+    timeout(makeRequestWithProxy(steamID64, noProxy, proxy), 7000)
       .then((result) => resolve(result))
       .catch((error) => {
         reject(error);
@@ -72,16 +72,16 @@ const requestWithTimeout = (
 };
 
 function makeRequestWithProxy(
-  proxy: Proxy,
   steamID64: string,
-  noProxy: boolean
+  noProxy: boolean,
+  proxy?: Proxy
 ): Promise<HttpResult> {
   const appID = "730";
   const contextID = "2";
 
   let agent: SocksProxyAgent | HttpsProxyAgent | undefined;
 
-  if (!noProxy) {
+  if (!noProxy && proxy) {
     agent =
       proxy.protocol === "socks4"
         ? new SocksProxyAgent({

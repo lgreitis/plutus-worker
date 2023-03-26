@@ -6,7 +6,7 @@ interface createStatisticEntryArguments {
   category: FetchTimeCategory;
   startTime: Date;
   lastProxyDuration: number;
-  proxy: Proxy;
+  proxy?: Proxy;
 }
 
 export const createStatisticEntry = async (
@@ -16,9 +16,9 @@ export const createStatisticEntry = async (
     data: {
       duration: Date.now() - data.startTime.getTime(),
       lastProxyDuration: data.lastProxyDuration,
-      proxyCountry: data.proxy.country,
-      proxyIp: data.proxy.ip,
-      proxyPort: data.proxy.port.toString(),
+      proxyCountry: data.proxy?.country || "",
+      proxyIp: data.proxy?.ip || "",
+      proxyPort: data.proxy?.port.toString() || "",
       category: data.category,
     },
   });
