@@ -44,5 +44,16 @@ module.exports = {
       output: "./logs/SAHWaccess.log",
       error: "./logs/SAHWerror.log",
     },
+    {
+      name: "OPHTW",
+      script: "node dist/workers/officialPriceTrimmer.js",
+      exec_mode: "fork",
+      instances: 1,
+      autorestart: true,
+      watch: false,
+      merge_logs: true,
+      output: "./logs/OPHTWaccess.log",
+      error: "./logs/OPHTWerror.log",
+    },
   ],
 };
