@@ -86,12 +86,27 @@ model Item {
   officialPricingHistoryUpdateTime DateTime?
   borderColor                      String?
 
-  OfficialPricingHistory OfficialPricingHistory[]
-  ApiItemPrice           ApiPricingHistory[]
-  UserItem               UserItem[]
+  OfficialPricingHistory          OfficialPricingHistory[]
+  OfficialPricingHistoryOptimized OfficialPricingHistoryOptimized[]
+  ApiItemPrice                    ApiPricingHistory[]
+  UserItem                        UserItem[]
 }
 
 model OfficialPricingHistory {
+  id     String   @id @default(uuid())
+  date   DateTime
+  price  Float
+  volume Int
+  item   Item     @relation(fields: [itemId], references: [id])
+  itemId String
+
+  @@unique([itemId, date])
+  @@index([itemId, date(sort: Desc)])
+  @@index([date])
+  @@index([itemId])
+}
+
+model OfficialPricingHistoryOptimized {
   id     String   @id @default(uuid())
   date   DateTime
   price  Float

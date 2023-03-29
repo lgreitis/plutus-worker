@@ -22,6 +22,16 @@ const main = async () => {
 
       if (!item) {
         // TODO: need to add the item if missing
+        // await prisma.item.create({
+        //   data: {
+        //     icon: trimSteamImageUrl(apiItem.image),
+        //     icon_small: trimSteamImageUrl(apiItem.image),
+        //     marketHashName: apiItem.market_hash_name,
+        //     marketName: apiItem.market_name,
+        //     rarity: "BaseGrade",
+        //     type: "Skin",
+        //   },
+        // });
         continue;
       }
 

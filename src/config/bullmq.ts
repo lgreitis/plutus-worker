@@ -9,6 +9,7 @@ import prisma from "./prisma";
 export const officialPricePool = new Queue("officialPrices");
 export const apiPriceFetchPool = new Queue("apiPrices");
 export const inventoryFetchPool = new Queue("inventoryFetch");
+export const officialPriceTrimmerPool = new Queue("officialPriceTrimmer");
 
 const bullmqConfig = async () => {
   const serverAdapter = new FastifyAdapter();
@@ -17,6 +18,7 @@ const bullmqConfig = async () => {
       new BullMQAdapter(officialPricePool),
       new BullMQAdapter(apiPriceFetchPool),
       new BullMQAdapter(inventoryFetchPool),
+      new BullMQAdapter(officialPriceTrimmerPool),
     ],
     serverAdapter,
   });
@@ -24,6 +26,7 @@ const bullmqConfig = async () => {
 
   emptyOfficialPricePoolChecker();
   await apiPriceFetchPoolCronJob();
+  await officialPriceTrimmerPoolCronJob();
 
   return serverAdapter;
 };
@@ -33,6 +36,14 @@ export default bullmqConfig;
 const apiPriceFetchPoolCronJob = async () => {
   await apiPriceFetchPool.add(
     "Fetch info from SteamApis",
+    {},
+    { repeat: { pattern: "0 * * * *" } }
+  );
+};
+
+const officialPriceTrimmerPoolCronJob = async () => {
+  await officialPriceTrimmerPool.add(
+    "Trim official price history",
     {},
     { repeat: { pattern: "0 * * * *" } }
   );
