@@ -46,7 +46,7 @@ const main = async () => {
         where: { inventoryId: inventory.id },
       });
 
-      const createItemBatch: Prisma.UserItemCreateManyInput[] = [];
+      const createUserItemBatch: Prisma.UserItemCreateManyInput[] = [];
 
       for await (const item of map) {
         const itemExistsInDatabase = allItems.find(
@@ -60,10 +60,10 @@ const main = async () => {
           (element) => element.marketHashName === item[0]
         );
 
-        createItemBatch.push({
+        createUserItemBatch.push({
           inventoryId: inventory.id,
           marketHashName: item[0],
-          quantity: foundItem?.quantity || item[1],
+          quantity: item[1] || foundItem?.quantity || 1,
           notes: foundItem?.notes,
           buyPrice: foundItem?.buyPrice,
           dateAdded: foundItem?.dateAdded,
@@ -71,7 +71,7 @@ const main = async () => {
       }
 
       await tx.userItem.deleteMany({ where: { inventoryId: inventory.id } });
-      await tx.userItem.createMany({ data: createItemBatch });
+      await tx.userItem.createMany({ data: createUserItemBatch });
     });
 
     job.updateProgress(99);
