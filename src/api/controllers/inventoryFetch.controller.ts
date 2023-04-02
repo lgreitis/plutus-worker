@@ -1,5 +1,5 @@
 import { Static, Type } from "@sinclair/typebox";
-import { FastifyInstance } from "fastify";
+import { FastifyPluginCallback } from "fastify";
 import { inventoryFetchPool } from "src/config/bullmq";
 import { sharedSecretHook } from "src/utils/sharedSecretHook";
 
@@ -34,10 +34,10 @@ const inventoryStatusResponse = Type.Object({
 
 type inventoryStatusResponseType = Static<typeof inventoryStatusResponse>;
 
-const inventoryFetchController = (
-  fastify: FastifyInstance,
-  _: unknown,
-  done: () => void
+const inventoryFetchController: FastifyPluginCallback = (
+  fastify,
+  options,
+  done
 ) => {
   fastify.route<{
     Body: inventoryFetchBodyType;

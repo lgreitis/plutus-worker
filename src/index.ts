@@ -1,4 +1,5 @@
 import inventoryFetchController from "src/api/controllers/inventoryFetch.controller";
+import searchController from "src/api/controllers/search.controller";
 import bullmqConfig from "src/config/bullmq";
 import fastifyConfig from "src/config/fastify";
 import prisma from "src/config/prisma";
@@ -12,6 +13,7 @@ const main = async () => {
     prefix: "/bull",
   });
   fastify.register(inventoryFetchController);
+  fastify.register(searchController);
   fastify.listen({ port: 3000 });
 };
 
