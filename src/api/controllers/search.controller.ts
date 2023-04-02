@@ -41,12 +41,12 @@ const searchController: FastifyPluginCallback = (fastify, options, done) => {
         // TODO: doesn't slow down too much but still need a better cache solution
         const itemLength = await prisma.item.count();
         if (itemCache.length === 0 || itemLength !== itemCache.length) {
-          itemCache = await prisma.item.findMany({});
+          itemCache = await prisma.item.findMany();
         }
         const result = search(request.query.searchString, itemCache, {
           keySelector: (item) => item.marketHashName,
           returnMatchData: request.query.returnMatchData,
-          threshold: 0.75,
+          threshold: 0.7,
         });
 
         reply.status(200).send({ success: true, result });
