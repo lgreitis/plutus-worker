@@ -55,5 +55,16 @@ module.exports = {
       output: "./logs/OPHTWaccess.log",
       error: "./logs/OPHTWerror.log",
     },
+    {
+      name: "EPW",
+      script: "node dist/workers/exchangePriceWorker.js",
+      exec_mode: "fork",
+      instances: 1,
+      autorestart: true,
+      watch: false,
+      merge_logs: true,
+      output: "./logs/EPWaccess.log",
+      error: "./logs/EPWerror.log",
+    },
   ],
 };
