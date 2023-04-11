@@ -87,9 +87,9 @@ model Item {
   borderColor                      String?
 
   OfficialPricingHistory          OfficialPricingHistory[]
-  OfficialPricingHistoryOptimized OfficialPricingHistoryOptimized[]
   ApiItemPrice                    ApiPricingHistory[]
   UserItem                        UserItem[]
+  OfficialPricingHistoryOptimized OfficialPricingHistoryOptimized[]
 }
 
 model OfficialPricingHistory {
@@ -157,6 +157,17 @@ model FetchTime {
   proxyPort         String
   fetchDate         DateTime          @default(now())
   category          FetchTimeCategory
+}
+
+model ExchangeRate {
+  id                 String @id @default(uuid())
+  timestamp          Float
+  baseCurrency       String
+  conversionCurrency String
+  rate               Float
+
+  @@index([conversionCurrency])
+  @@index([conversionCurrency, timestamp(sort: Desc)])
 }
 
 enum FetchTimeCategory {

@@ -10,6 +10,7 @@ export const officialPricePool = new Queue("officialPrices");
 export const apiPriceFetchPool = new Queue("apiPrices");
 export const inventoryFetchPool = new Queue("inventoryFetch");
 export const officialPriceTrimmerPool = new Queue("officialPriceTrimmer");
+export const exchangeRateFetchPool = new Queue("exchangeRateFetch");
 
 const bullmqConfig = async () => {
   const serverAdapter = new FastifyAdapter();
@@ -19,6 +20,7 @@ const bullmqConfig = async () => {
       new BullMQAdapter(apiPriceFetchPool),
       new BullMQAdapter(inventoryFetchPool),
       new BullMQAdapter(officialPriceTrimmerPool),
+      new BullMQAdapter(exchangeRateFetchPool),
     ],
     serverAdapter,
   });
@@ -27,6 +29,7 @@ const bullmqConfig = async () => {
   emptyOfficialPricePoolChecker();
   await apiPriceFetchPoolCronJob();
   await officialPriceTrimmerPoolCronJob();
+  await exchangeRateFetchPoolCronJob();
 
   return serverAdapter;
 };
@@ -46,6 +49,14 @@ const officialPriceTrimmerPoolCronJob = async () => {
     "Trim official price history",
     {},
     { repeat: { pattern: "0 * * * *" } }
+  );
+};
+
+const exchangeRateFetchPoolCronJob = async () => {
+  await exchangeRateFetchPool.add(
+    "Grab newest exchange rates",
+    {},
+    { repeat: { pattern: "0 */2 * * *" } }
   );
 };
 
