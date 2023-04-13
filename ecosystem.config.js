@@ -66,5 +66,16 @@ module.exports = {
       output: "./logs/EPWaccess.log",
       error: "./logs/EPWerror.log",
     },
+    {
+      name: "DB",
+      script: "node dist/workers/discordBot.js",
+      exec_mode: "fork",
+      instances: 1,
+      autorestart: true,
+      watch: false,
+      merge_logs: true,
+      output: "./logs/DBaccess.log",
+      error: "./logs/DBerror.log",
+    },
   ],
 };
