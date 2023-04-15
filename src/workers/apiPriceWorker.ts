@@ -44,6 +44,18 @@ const main = async () => {
         continue;
       }
 
+      if (
+        item.officialPricingHistoryUpdateTime &&
+        item.officialPricingHistoryUpdateTime.getTime() < apiItem.updated_at
+      ) {
+        await prisma.item.update({
+          where: { marketHashName: item.marketHashName },
+          data: {
+            lastPrice: apiItem.prices.latest,
+          },
+        });
+      }
+
       if (!item.icon || !item.borderColor) {
         await prisma.item.update({
           where: { marketHashName: item.marketHashName },
