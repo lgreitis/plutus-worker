@@ -8,6 +8,7 @@
     "start": "node dist/index.js"
   },
   "dependencies": {
+    "@basementuniverse/stats": "^1.0.1",
     "@bull-board/fastify": "^4.11.0",
     "@fastify/one-line-logger": "^1.1.1",
     "@fastify/swagger": "^8.3.0",
@@ -15,7 +16,7 @@
     "@fastify/type-provider-typebox": "^2.4.0",
     "@prisma/client": "^4.9.0",
     "@sinclair/typebox": "^0.25.24",
-    "axios": "^1.2.3",
+    "axios": "^1.3.5",
     "bullmq": "^3.6.2",
     "date-fns": "^2.29.3",
     "discord.js": "^14.9.0",
