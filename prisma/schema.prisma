@@ -82,7 +82,7 @@ model Item {
   marketHashName                   String     @unique
   lastPrice                        Float?
   rarity                           ItemRarity
-  type                             ItemType
+  type                             ItemType?
   icon                             String
   icon_small                       String
   officialPricingHistoryUpdateTime DateTime?
@@ -212,13 +212,15 @@ enum ItemRarity {
 }
 
 enum ItemType {
+  Skin
+  Sticker
   Container
+  Collectible
   Agent
   Patch
   MusicKit
-  Skin
-  Sticker
-  Tool
+  Graffiti
+  Other
 }
 
 enum ItemUnstableReason {
