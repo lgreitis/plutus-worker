@@ -107,7 +107,7 @@ export const itemValue: SlashCommand = {
               inline: true,
             },
             {
-              name: "Volume 24h 📈",
+              name: "Volume 24h",
               value: currencyFormatter.format(
                 (populatedItem.ItemStatistics?.volume24h || 0) *
                   (exchangeRate?.rate || 1)
