@@ -103,7 +103,9 @@ export const itemValue: SlashCommand = {
           .setFields([
             {
               name: "Latest Price",
-              value: currencyFormatter.format(populatedItem.lastPrice || 0),
+              value: currencyFormatter.format(
+                (populatedItem.lastPrice || 0) * (exchangeRate?.rate || 1)
+              ),
               inline: true,
             },
             {
