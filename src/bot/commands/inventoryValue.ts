@@ -33,10 +33,12 @@ export const inventoryValue: SlashCommand = {
       return;
     }
 
-    let value = 0;
+    let worth = 0;
+    let invested = 0;
 
     for (const item of user.Inventory.UserItem) {
-      value += (item.Item.lastPrice || 0) * item.quantity;
+      invested += (item.buyPrice || 0) * item.quantity;
+      worth += (item.Item.lastPrice || 0) * item.quantity;
     }
 
     const currencyFormatter = new Intl.NumberFormat(undefined, {
@@ -53,11 +55,28 @@ export const inventoryValue: SlashCommand = {
       embeds: [
         new EmbedBuilder()
           .setAuthor({ name: "Plutus" })
-          .setDescription(
-            `Your inventory value is: ${currencyFormatter.format(
-              value * (exchangeRate?.rate || 1)
-            )}`
-          ),
+          .setTitle(`${interaction.user.username} inventory value:`)
+          .setFields([
+            {
+              name: "Invested",
+              value: currencyFormatter.format(invested),
+              inline: true,
+            },
+            {
+              name: "Worth",
+              value: currencyFormatter.format(
+                worth * (exchangeRate?.rate || 1)
+              ),
+              inline: true,
+            },
+            {
+              name: "Difference",
+              value: currencyFormatter.format(
+                worth * (exchangeRate?.rate || 1) - invested
+              ),
+              inline: true,
+            },
+          ]),
       ],
     });
   },

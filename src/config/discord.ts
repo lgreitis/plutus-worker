@@ -7,6 +7,7 @@ import {
   Routes,
 } from "discord.js";
 import { inventoryValue } from "src/bot/commands/inventoryValue";
+import { itemValue } from "src/bot/commands/itemValue";
 import { pingCommand } from "src/bot/commands/ping";
 import { DISCORD_APPLICATION_ID, DISCORD_TOKEN } from "src/constants";
 import { SlashCommand } from "src/discordTypes";
@@ -16,7 +17,7 @@ export const discordClient = new Client({
 });
 
 const discordConfig = async () => {
-  const commands = [pingCommand, inventoryValue];
+  const commands = [pingCommand, inventoryValue, itemValue];
   discordClient.slashCommands = new Collection<string, SlashCommand>();
 
   for (const command of commands) {
