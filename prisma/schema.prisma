@@ -49,6 +49,9 @@ model User {
 
   fetchJobId String?
   lastFetch  DateTime?
+
+  friendOf User[] @relation("UserFriends")
+  friends  User[] @relation("UserFriends")
 }
 
 model Inventory {
