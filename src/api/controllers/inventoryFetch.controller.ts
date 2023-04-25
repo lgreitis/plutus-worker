@@ -58,7 +58,8 @@ const inventoryFetchController: FastifyPluginCallback = (
         const job = await inventoryFetchPool.add(
           `Fetch inventory`,
           {
-            ...request.body,
+            userId: request.body.userId,
+            steamId: request.body.steamId,
           },
           { attempts: 10 }
         );
