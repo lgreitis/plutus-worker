@@ -9,9 +9,7 @@ import prisma from "./prisma";
 export const officialPricePool = new Queue("officialPrices");
 export const apiPriceFetchPool = new Queue("apiPrices");
 export const inventoryFetchPool = new Queue("inventoryFetch");
-export const officialPriceTrimmerPool = new Queue("officialPriceTrimmer");
 export const exchangeRateFetchPool = new Queue("exchangeRateFetch");
-export const itemStatisticsPool = new Queue("itemStatistics");
 
 const bullmqConfig = async () => {
   const serverAdapter = new FastifyAdapter();
@@ -20,9 +18,7 @@ const bullmqConfig = async () => {
       new BullMQAdapter(officialPricePool),
       new BullMQAdapter(apiPriceFetchPool),
       new BullMQAdapter(inventoryFetchPool),
-      new BullMQAdapter(officialPriceTrimmerPool),
       new BullMQAdapter(exchangeRateFetchPool),
-      new BullMQAdapter(itemStatisticsPool),
     ],
     serverAdapter,
   });
@@ -30,9 +26,7 @@ const bullmqConfig = async () => {
 
   emptyOfficialPricePoolChecker();
   await apiPriceFetchPoolCronJob();
-  await officialPriceTrimmerPoolCronJob();
   await exchangeRateFetchPoolCronJob();
-  await itemStatisticsPoolCronJob();
 
   return serverAdapter;
 };
@@ -47,27 +41,11 @@ const apiPriceFetchPoolCronJob = async () => {
   );
 };
 
-const officialPriceTrimmerPoolCronJob = async () => {
-  await officialPriceTrimmerPool.add(
-    "Trim official price history",
-    {},
-    { repeat: { pattern: "0 * * * *" } }
-  );
-};
-
 const exchangeRateFetchPoolCronJob = async () => {
   await exchangeRateFetchPool.add(
     "Grab newest exchange rates",
     {},
     { repeat: { pattern: "0 */2 * * *" } }
-  );
-};
-
-const itemStatisticsPoolCronJob = async () => {
-  await itemStatisticsPool.add(
-    "Calculate item statistics",
-    {},
-    { repeat: { pattern: "30 */1 * * *" } }
   );
 };
 
