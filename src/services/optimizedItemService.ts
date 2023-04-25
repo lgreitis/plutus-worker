@@ -1,46 +1,27 @@
 import { OfficialPricingHistory } from "@prisma/client";
-import { Worker } from "bullmq";
 import { startOfDay, subYears } from "date-fns";
 import prisma from "src/config/prisma";
 
-const main = async () => {
-  new Worker("officialPriceTrimmer", async () => {
-    const items = await prisma.item.findMany({});
+export const createOptimizedTableEntries = async (itemId: string) => {
+  await prisma.$transaction(async (tx) => {
+    const promises = [
+      tx.officialPricingHistoryOptimized.deleteMany({
+        where: { itemId: itemId },
+      }),
+      tx.officialPricingHistory.findMany({
+        where: { date: { gt: subYears(new Date(), 1) }, itemId: itemId },
+      }),
+    ] as const;
 
-    for await (const item of items) {
-      console.time(item.marketHashName);
-      await prisma.$transaction(async (tx) => {
-        const promises = [
-          tx.officialPricingHistoryOptimized.deleteMany({
-            where: { itemId: item.id },
-          }),
-          tx.officialPricingHistory.findMany({
-            where: { date: { gt: subYears(new Date(), 1) }, itemId: item.id },
-          }),
-        ] as const;
+    const [, stats] = await Promise.all(promises);
 
-        const [, stats] = await Promise.all(promises);
+    const data = normalizeData(stats);
 
-        const data = normalizeData(stats);
-
-        await tx.officialPricingHistoryOptimized.createMany({
-          data: data,
-        });
-      });
-      console.timeEnd(item.marketHashName);
-    }
+    await tx.officialPricingHistoryOptimized.createMany({
+      data: data,
+    });
   });
 };
-
-main()
-  .then(async () => {
-    await prisma.$disconnect();
-  })
-  .catch(async (error) => {
-    console.error(error);
-    await prisma.$disconnect();
-    process.exit(1);
-  });
 
 interface DataGroup {
   volume: number;

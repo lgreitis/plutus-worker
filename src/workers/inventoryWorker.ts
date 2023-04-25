@@ -2,7 +2,7 @@ import { Prisma } from "@prisma/client";
 import { Job, Worker } from "bullmq";
 import prisma from "src/config/prisma";
 import { INVENTORY_PROXY_STRING } from "src/constants";
-import { fetchInventory } from "src/service/inventoryFetchService";
+import { fetchInventory } from "src/services/inventoryFetchService";
 import { InventoryFetchPoolData } from "src/types";
 import ProxyRotationHandler from "src/utils/proxyRotationHandler";
 import { createStatisticEntry } from "src/utils/statistics";

@@ -2,10 +2,12 @@ import { Job, Worker } from "bullmq";
 import { formatDuration, intervalToDuration } from "date-fns";
 import prisma from "src/config/prisma";
 import { FETCH_PROXY_STRING } from "src/constants";
+import { createItemStatistics } from "src/services/itemStatisticsService";
 import {
   fetchItemHistory,
   officialPriceHistoryToDatabase,
-} from "src/service/officialPriceHistoryService";
+} from "src/services/officialPriceHistoryService";
+import { createOptimizedTableEntries } from "src/services/optimizedItemService";
 import { OfficialPricePoolData } from "src/types";
 import ProxyRotationHandler from "src/utils/proxyRotationHandler";
 import { createStatisticEntry } from "src/utils/statistics";
@@ -32,7 +34,14 @@ const main = async () => {
       return;
     }
 
-    await officialPriceHistoryToDatabase(result.result, item);
+    const updatedItem = await officialPriceHistoryToDatabase(
+      result.result,
+      item
+    );
+    await createOptimizedTableEntries(item.id);
+    updatedItem &&
+      (await createItemStatistics(updatedItem.id, updatedItem.lastPrice));
+
     const duration = intervalToDuration({ start: startTime, end: new Date() });
 
     await createStatisticEntry({

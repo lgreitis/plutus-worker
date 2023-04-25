@@ -4,6 +4,7 @@ import prisma from "src/config/prisma";
 
 type GeneralizedResponse = { name: string; weapon: string }[];
 
+// This is used to manually fill item types of items
 const main = async () => {
   const items = await prisma.item.findMany();
 

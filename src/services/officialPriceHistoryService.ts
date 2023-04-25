@@ -134,6 +134,10 @@ export const officialPriceHistoryToDatabase = async (
   data: SteamHistoryResult[],
   item: Item
 ) => {
+  if (data.length === 0) {
+    return;
+  }
+
   const batch: Prisma.OfficialPricingHistoryCreateManyInput[] = [];
 
   for (const itemHistory of data) {
@@ -151,7 +155,7 @@ export const officialPriceHistoryToDatabase = async (
       console.log(error);
     });
 
-  await prisma.item.update({
+  return await prisma.item.update({
     where: { id: item.id },
     data: {
       officialPricingHistoryUpdateTime: new Date(),
