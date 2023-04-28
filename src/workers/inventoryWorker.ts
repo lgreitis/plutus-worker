@@ -44,6 +44,9 @@ const main = async () => {
       const allItems = await tx.item.findMany();
       const items = await tx.userItem.findMany({
         where: { inventoryId: inventory.id },
+        include: {
+          Item: true,
+        },
       });
 
       const createUserItemBatch: Prisma.UserItemCreateManyInput[] = [];
@@ -57,12 +60,12 @@ const main = async () => {
         }
 
         const foundItem = items.find(
-          (element) => element.marketHashName === item[0]
+          (element) => element.Item.marketHashName === item[0]
         );
 
         createUserItemBatch.push({
           inventoryId: inventory.id,
-          marketHashName: item[0],
+          itemId: itemExistsInDatabase.id,
           quantity: item[1] || foundItem?.quantity || 1,
           notes: foundItem?.notes,
           buyPrice: foundItem?.buyPrice,

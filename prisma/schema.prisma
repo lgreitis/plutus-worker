@@ -1,6 +1,6 @@
 generator client {
   provider        = "prisma-client-js"
-  previewFeatures = ["orderByNulls", "fullTextSearch"]
+  previewFeatures = ["orderByNulls", "fullTextSearch", "jsonProtocol"]
 }
 
 datasource db {
@@ -50,8 +50,9 @@ model User {
   fetchJobId String?
   lastFetch  DateTime?
 
-  friendOf User[] @relation("UserFriends")
-  friends  User[] @relation("UserFriends")
+  friendOf          User[]              @relation("UserFriends")
+  friends           User[]              @relation("UserFriends")
+  UserFavouriteItem UserFavouriteItem[]
 }
 
 model Inventory {
@@ -70,13 +71,24 @@ model UserItem {
   quantity  Int
   notes     String?
 
-  Item           Item      @relation(fields: [marketHashName], references: [marketHashName])
-  Inventory      Inventory @relation(fields: [inventoryId], references: [id], onDelete: Cascade)
-  marketHashName String
-  inventoryId    String
+  Item        Item      @relation(fields: [itemId], references: [id])
+  Inventory   Inventory @relation(fields: [inventoryId], references: [id], onDelete: Cascade)
+  itemId      String
+  inventoryId String
 
-  @@unique([inventoryId, marketHashName])
-  @@index([marketHashName])
+  @@unique([inventoryId, itemId])
+  @@index([itemId])
+}
+
+model UserFavouriteItem {
+  id             String @id @default(uuid())
+  Item           Item   @relation(fields: [marketHashName], references: [marketHashName])
+  User           User   @relation(fields: [userId], references: [id])
+  marketHashName String
+  userId         String
+
+  @@unique([marketHashName, userId])
+  @@index([userId])
 }
 
 model Item {
@@ -96,6 +108,7 @@ model Item {
   ApiItemPrice                    ApiPricingHistory[]
   UserItem                        UserItem[]
   OfficialPricingHistoryOptimized OfficialPricingHistoryOptimized[]
+  UserFavouriteItem               UserFavouriteItem[]
 }
 
 model ItemStatistics {
