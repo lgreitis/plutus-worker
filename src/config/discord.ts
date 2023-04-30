@@ -26,9 +26,27 @@ const discordConfig = async () => {
 
   const rest = new REST().setToken(DISCORD_TOKEN);
 
-  await rest.put(Routes.applicationCommands(DISCORD_APPLICATION_ID), {
-    body: commands.map((command) => command.command.toJSON()),
-  });
+  try {
+    console.log(
+      `Started refreshing ${commands.length} application (/) commands.`
+    );
+
+    const data = await rest.put(
+      Routes.applicationCommands(DISCORD_APPLICATION_ID),
+      {
+        body: commands.map((command) => command.command.toJSON()),
+      }
+    );
+
+    if (typeof data === "object" && data && "length" in data) {
+      console.log(
+        `Successfully reloaded ${data.length} application (/) commands.`
+      );
+    }
+  } catch (error) {
+    console.log("Failde to update commands");
+    console.error(error);
+  }
 
   await discordClient.login(DISCORD_TOKEN);
 };
