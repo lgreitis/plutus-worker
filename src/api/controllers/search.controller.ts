@@ -7,7 +7,6 @@ import { sharedSecretHeaderHook } from "src/utils/sharedSecretHook";
 const searchQueryString = Type.Object({
   searchString: Type.String(),
   returnMatchData: Type.Boolean({ default: false }),
-  returnId: Type.Boolean({ default: false }),
 });
 
 type searchQueryStringType = Static<typeof searchQueryString>;
@@ -45,7 +44,7 @@ const searchController: FastifyPluginCallback = (fastify, options, done) => {
             select: {
               marketHashName: true,
               icon: true,
-              id: request.query.returnId,
+              id: true,
             },
           });
         }
