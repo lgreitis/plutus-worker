@@ -118,7 +118,7 @@ model ItemStatistics {
   change24h Float
   change7d  Float
   change30d Float
-  item      Item   @relation(fields: [itemId], references: [id])
+  Item      Item   @relation(fields: [itemId], references: [id])
   itemId    String @unique
 
   @@index([volume24h(sort: Desc)])

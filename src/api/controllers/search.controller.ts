@@ -1,4 +1,3 @@
-import { Item } from "@prisma/client";
 import { Static, Type } from "@sinclair/typebox";
 import { search } from "fast-fuzzy";
 import { FastifyPluginCallback } from "fastify";
@@ -19,7 +18,7 @@ const searchResult = Type.Object({
 
 type searchResultType = Static<typeof searchResult>;
 
-let itemCache: Item[] = [];
+let itemCache: { marketHashName: string; icon: string }[] = [];
 
 const searchController: FastifyPluginCallback = (fastify, options, done) => {
   fastify.route<{
@@ -41,7 +40,9 @@ const searchController: FastifyPluginCallback = (fastify, options, done) => {
         // TODO: doesn't slow down too much but still need a better cache solution
         const itemLength = await prisma.item.count();
         if (itemCache.length === 0 || itemLength !== itemCache.length) {
-          itemCache = await prisma.item.findMany();
+          itemCache = await prisma.item.findMany({
+            select: { marketHashName: true, icon: true },
+          });
         }
         const result = search(request.query.searchString, itemCache, {
           keySelector: (item) => item.marketHashName,
