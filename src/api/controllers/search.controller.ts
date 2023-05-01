@@ -18,7 +18,7 @@ const searchResult = Type.Object({
 
 type searchResultType = Static<typeof searchResult>;
 
-let itemCache: { marketHashName: string; icon: string }[] = [];
+let itemCache: { marketHashName: string; icon: string; id: string }[] = [];
 
 const searchController: FastifyPluginCallback = (fastify, options, done) => {
   fastify.route<{
