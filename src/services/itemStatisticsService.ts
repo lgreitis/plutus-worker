@@ -22,11 +22,20 @@ export const createItemStatistics = async (
     isAfter(element.date, dayCutoff)
   );
 
-  const volume24h = calculateVolume(daysData);
-  const volume7d = calculateVolume(weeksData);
+  const { volume: volume24h, sales: sales24h } =
+    calculateVolumeAndSales(daysData);
+  const { volume: volume7d, sales: sales7d } =
+    calculateVolumeAndSales(weeksData);
+  const { volume: volume30d, sales: sales30d } =
+    calculateVolumeAndSales(monthsData);
+
   let change24h = 0;
   let change7d = 0;
   let change30d = 0;
+
+  const median24h = calculateMedian(daysData);
+  const median7d = calculateMedian(weeksData);
+  const median30d = calculateMedian(monthsData);
 
   if (lastPrice) {
     const monthsDataWithoutOutliers = detectOutliers(
@@ -69,6 +78,13 @@ export const createItemStatistics = async (
       change30d,
       volume24h,
       volume7d,
+      volume30d,
+      sales24h,
+      sales7d,
+      sales30d,
+      median24h,
+      median7d,
+      median30d,
     },
     create: {
       change24h,
@@ -76,6 +92,13 @@ export const createItemStatistics = async (
       change30d,
       volume24h,
       volume7d,
+      volume30d,
+      sales24h,
+      sales7d,
+      sales30d,
+      median24h,
+      median7d,
+      median30d,
       itemId: itemId,
     },
   });
@@ -101,7 +124,7 @@ const calculateChange = (latest: number, oldest: number) => {
   return ((latest - oldest) / oldest) * 100;
 };
 
-const calculateVolume = (
+const calculateVolumeAndSales = (
   data: {
     date: Date;
     price: number;
@@ -109,8 +132,24 @@ const calculateVolume = (
   }[]
 ) => {
   let volume = 0;
+  let sales = 0;
   for (const point of data) {
     volume += point.price * point.volume;
+    sales += point.volume;
   }
-  return volume;
+  return { volume, sales };
+};
+
+const calculateMedian = (data: { price: number }[]) => {
+  if (data.length === 0) {
+    return 0;
+  }
+
+  data.sort((a, b) => a.price - b.price);
+
+  const half = Math.floor(data.length / 2);
+
+  if (data.length % 2) return data[half].price;
+
+  return (data[half - 1].price + data[half].price) / 2;
 };

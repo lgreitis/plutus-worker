@@ -115,6 +115,13 @@ model ItemStatistics {
   id        String @id @default(uuid())
   volume24h Float
   volume7d  Float
+  volume30d Float  @default(0)
+  sales24h  Float  @default(0)
+  sales7d   Float  @default(0)
+  sales30d  Float  @default(0)
+  median24h Float  @default(0)
+  median7d  Float  @default(0)
+  median30d Float  @default(0)
   change24h Float
   change7d  Float
   change30d Float
