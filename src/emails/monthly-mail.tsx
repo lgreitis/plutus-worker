@@ -76,8 +76,8 @@ export const MonthlyMail = (properties: Properties) => {
               </Button>
             </Section>
             <Text className="text-white text-[14px] leading-[24px]">
-              To stop recieving these messages, please turn off emails in your
-              account's settings.
+              These emails are opt-in. To stop receiving these messages, you can
+              turn off emails in your account's settings.
             </Text>
           </Container>
         </Body>
