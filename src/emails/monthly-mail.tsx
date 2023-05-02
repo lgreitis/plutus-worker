@@ -46,20 +46,21 @@ export const MonthlyMail = (properties: Properties) => {
             </Heading>
             {percentage > 0 && (
               <Text className="text-white text-[18px] leading-[24px]">
-                Your inventory grew{" "}
+                Your inventory increased in value by{" "}
                 <strong className="text-green-400">
                   {percentage.toFixed(2)}%
                 </strong>
-                ! That's <strong>{difference}</strong>!
+                , which is equivalent to <strong>{difference}</strong>.
               </Text>
             )}
             {percentage < 0 && (
               <Text className="text-white text-[18px] leading-[24px]">
-                Unfortunately your inventory lost{" "}
+                Your inventory decreased in value by{" "}
                 <strong className="text-red-400">
-                  {percentage.toFixed(2)}%
-                </strong>{" "}
-                of it's value. That's <strong>{difference}</strong>.
+                  {Math.abs(percentage).toFixed(2)}%
+                </strong>
+                {", "}
+                which is equivalent to <strong>{difference}</strong>.
               </Text>
             )}
             <Text className="text-white text-[18px] leading-[24px]">
