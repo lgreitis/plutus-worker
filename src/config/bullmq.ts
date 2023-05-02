@@ -10,6 +10,7 @@ export const officialPricePool = new Queue("officialPrices");
 export const apiPriceFetchPool = new Queue("apiPrices");
 export const inventoryFetchPool = new Queue("inventoryFetch");
 export const exchangeRateFetchPool = new Queue("exchangeRateFetch");
+export const mailSenderPool = new Queue("mailSender");
 
 const bullmqConfig = async () => {
   const serverAdapter = new FastifyAdapter();
@@ -19,6 +20,7 @@ const bullmqConfig = async () => {
       new BullMQAdapter(apiPriceFetchPool),
       new BullMQAdapter(inventoryFetchPool),
       new BullMQAdapter(exchangeRateFetchPool),
+      new BullMQAdapter(mailSenderPool),
     ],
     serverAdapter,
   });
@@ -27,6 +29,7 @@ const bullmqConfig = async () => {
   emptyOfficialPricePoolChecker();
   await apiPriceFetchPoolCronJob();
   await exchangeRateFetchPoolCronJob();
+  await mailSenderPoolCronJob();
 
   return serverAdapter;
 };
@@ -46,6 +49,14 @@ const exchangeRateFetchPoolCronJob = async () => {
     "Grab newest exchange rates",
     {},
     { repeat: { pattern: "0 */2 * * *" } }
+  );
+};
+
+const mailSenderPoolCronJob = async () => {
+  await mailSenderPool.add(
+    "Send monthly emails",
+    {},
+    { repeat: { pattern: "0 12 1 * *" } }
   );
 };
 

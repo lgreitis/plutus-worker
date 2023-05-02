@@ -9,7 +9,8 @@ if (
   !process.env.APIS_KEY ||
   !process.env.OPEN_EXCHANGE_RATES_APP_ID ||
   !process.env.DISCORD_TOKEN ||
-  !process.env.DISCORD_APPLICATION_ID
+  !process.env.DISCORD_APPLICATION_ID ||
+  !process.env.SENDGRID_API_KEY
 ) {
   throw new Error("Bad .env");
 }
@@ -22,3 +23,4 @@ export const OPEN_EXCHANGE_RATES_APP_ID =
   process.env.OPEN_EXCHANGE_RATES_APP_ID;
 export const DISCORD_TOKEN = process.env.DISCORD_TOKEN;
 export const DISCORD_APPLICATION_ID = process.env.DISCORD_APPLICATION_ID;
+export const SENDGRID_API_KEY = process.env.SENDGRID_API_KEY;

@@ -43,6 +43,7 @@ model User {
   image         String?
   currency      String     @default("USD")
   public        Boolean    @default(true)
+  sendEmails    Boolean    @default(false)
   accounts      Account[]
   sessions      Session[]
   Inventory     Inventory?
