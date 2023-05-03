@@ -10,9 +10,9 @@ export const createItemStatistics = async (
   const weekCutoff = subDays(new Date(), 7);
 
   const monthsData = await prisma.officialPricingHistory.findMany({
-    orderBy: { date: "desc" },
     where: { itemId: itemId, date: { gte: subMonths(new Date(), 1) } },
     select: { price: true, volume: true, date: true },
+    orderBy: { date: "desc" },
   });
 
   const weeksData = monthsData.filter((element) =>
@@ -145,7 +145,7 @@ const calculateMedian = (data: { price: number }[]) => {
     return 0;
   }
 
-  data.sort((a, b) => a.price - b.price);
+  [...data].sort((a, b) => a.price - b.price);
 
   const half = Math.floor(data.length / 2);
 
