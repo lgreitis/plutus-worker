@@ -145,11 +145,11 @@ const calculateMedian = (data: { price: number }[]) => {
     return 0;
   }
 
-  [...data].sort((a, b) => a.price - b.price);
+  const sorted = [...data].sort((a, b) => a.price - b.price);
 
-  const half = Math.floor(data.length / 2);
+  const half = Math.floor(sorted.length / 2);
 
-  if (data.length % 2) return data[half].price;
+  if (sorted.length % 2) return sorted[half].price;
 
-  return (data[half - 1].price + data[half].price) / 2;
+  return (sorted[half - 1].price + sorted[half].price) / 2;
 };
