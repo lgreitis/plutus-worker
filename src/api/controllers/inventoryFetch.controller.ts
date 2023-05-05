@@ -1,7 +1,7 @@
 import { Static, Type } from "@sinclair/typebox";
 import { FastifyPluginCallback } from "fastify";
 import { inventoryFetchPool } from "src/config/bullmq";
-import { sharedSecretHook } from "src/utils/sharedSecretHook";
+import { sharedSecretHeaderHook } from "src/utils/sharedSecretHook";
 
 const inventoryFetchBody = Type.Object({
   steamId: Type.String(),
@@ -52,7 +52,7 @@ const inventoryFetchController: FastifyPluginCallback = (
         200: inventoryFetchResponse,
       },
     },
-    preHandler: sharedSecretHook,
+    preHandler: sharedSecretHeaderHook,
     handler: async (request, reply) => {
       try {
         const job = await inventoryFetchPool.add(
@@ -89,7 +89,7 @@ const inventoryFetchController: FastifyPluginCallback = (
         200: inventoryStatusResponse,
       },
     },
-    preHandler: sharedSecretHook,
+    preHandler: sharedSecretHeaderHook,
     handler: async (request, reply) => {
       try {
         const job = await inventoryFetchPool.getJob(request.body.jobId);
