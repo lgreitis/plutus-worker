@@ -6,7 +6,6 @@ import { sharedSecretHeaderHook } from "src/utils/sharedSecretHook";
 const inventoryFetchBody = Type.Object({
   steamId: Type.String(),
   userId: Type.String(),
-  secret: Type.String(),
 });
 
 type inventoryFetchBodyType = Static<typeof inventoryFetchBody>;
@@ -20,7 +19,6 @@ type inventoryFetchResponseType = Static<typeof inventoryFetchResponse>;
 
 const inventoryStatusBody = Type.Object({
   jobId: Type.String(),
-  secret: Type.String(),
 });
 
 type inventoryStatusBodyType = Static<typeof inventoryStatusBody>;
