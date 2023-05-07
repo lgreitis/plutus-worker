@@ -89,20 +89,21 @@ async function makeRequestWithProxy(
   parameter: string,
   proxy?: Proxy
 ): Promise<HttpResult> {
-  const agent: SocksProxyAgent | HttpsProxyAgent | undefined = undefined;
+  let agent: SocksProxyAgent | HttpsProxyAgent | undefined;
 
   if (proxy) {
-    proxy.protocol === "socks4"
-      ? new SocksProxyAgent({
-          hostname: proxy.ip,
-          port: proxy.port,
-          protocol: proxy.protocol,
-        })
-      : new HttpsProxyAgent({
-          host: proxy.ip,
-          port: proxy.port,
-          protocol: "http",
-        });
+    agent =
+      proxy.protocol === "socks4"
+        ? new SocksProxyAgent({
+            hostname: proxy.ip,
+            port: proxy.port,
+            protocol: proxy.protocol,
+          })
+        : new HttpsProxyAgent({
+            host: proxy.ip,
+            port: proxy.port,
+            protocol: "http",
+          });
   }
 
   const userAgent = randomUseragent.getRandom();
