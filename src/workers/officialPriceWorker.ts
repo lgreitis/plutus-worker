@@ -30,7 +30,7 @@ const main = async () => {
       where: { marketHashName: data.marketHashName },
     });
 
-    if (!item) {
+    if (!item || !result) {
       return;
     }
 
@@ -39,8 +39,7 @@ const main = async () => {
       item
     );
     await createOptimizedTableEntries(item.id);
-    updatedItem &&
-      (await createItemStatistics(updatedItem.id, updatedItem.lastPrice));
+    updatedItem && (await createItemStatistics(updatedItem.id));
 
     const duration = intervalToDuration({ start: startTime, end: new Date() });
 

@@ -2,10 +2,7 @@ import { iqr, median } from "@basementuniverse/stats";
 import { isAfter, subDays, subMonths } from "date-fns";
 import prisma from "src/config/prisma";
 
-export const createItemStatistics = async (
-  itemId: string,
-  lastPrice: number | null
-) => {
+export const createItemStatistics = async (itemId: string) => {
   const dayCutoff = subDays(new Date(), 1);
   const weekCutoff = subDays(new Date(), 7);
 
@@ -37,37 +34,35 @@ export const createItemStatistics = async (
   const median7d = calculateMedian(weeksData);
   const median30d = calculateMedian(monthsData);
 
-  if (lastPrice) {
-    const monthsDataWithoutOutliers = detectOutliers(
-      monthsData.map((element) => element.price)
-    );
-    const weeksDataWithoutOutliers = detectOutliers(
-      weeksData.map((element) => element.price)
-    );
-    const daysDataWithoutOutliers = detectOutliers(
-      daysData.map((element) => element.price)
-    );
+  const monthsDataWithoutOutliers = detectOutliers(
+    monthsData.map((element) => element.price)
+  );
+  const weeksDataWithoutOutliers = detectOutliers(
+    weeksData.map((element) => element.price)
+  );
+  const daysDataWithoutOutliers = detectOutliers(
+    daysData.map((element) => element.price)
+  );
 
-    const last = monthsDataWithoutOutliers[0];
+  const last = monthsDataWithoutOutliers[0];
 
-    if (monthsDataWithoutOutliers[monthsDataWithoutOutliers.length - 1]) {
-      change30d = calculateChange(
-        last,
-        monthsDataWithoutOutliers[monthsDataWithoutOutliers.length - 1]
-      );
-    }
-    if (weeksDataWithoutOutliers[weeksDataWithoutOutliers.length - 1]) {
-      change7d = calculateChange(
-        last,
-        weeksDataWithoutOutliers[weeksDataWithoutOutliers.length - 1]
-      );
-    }
-    if (daysDataWithoutOutliers[daysDataWithoutOutliers.length - 1]) {
-      change24h = calculateChange(
-        last,
-        daysDataWithoutOutliers[daysDataWithoutOutliers.length - 1]
-      );
-    }
+  if (monthsDataWithoutOutliers[monthsDataWithoutOutliers.length - 1]) {
+    change30d = calculateChange(
+      last,
+      monthsDataWithoutOutliers[monthsDataWithoutOutliers.length - 1]
+    );
+  }
+  if (weeksDataWithoutOutliers[weeksDataWithoutOutliers.length - 1]) {
+    change7d = calculateChange(
+      last,
+      weeksDataWithoutOutliers[weeksDataWithoutOutliers.length - 1]
+    );
+  }
+  if (daysDataWithoutOutliers[daysDataWithoutOutliers.length - 1]) {
+    change24h = calculateChange(
+      last,
+      daysDataWithoutOutliers[daysDataWithoutOutliers.length - 1]
+    );
   }
 
   await prisma.itemStatistics.upsert({

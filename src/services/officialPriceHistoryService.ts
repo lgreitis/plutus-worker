@@ -10,18 +10,23 @@ import ProxyRotationHandler from "src/utils/proxyRotationHandler";
 
 export const fetchItemHistory = async (
   marketHashName: string,
-  proxyRotationHandler: ProxyRotationHandler
-): Promise<{
-  result: SteamHistoryResult[];
-  proxy: Proxy;
-  lastProxyDuration: number;
-}> => {
+  proxyRotationHandler?: ProxyRotationHandler
+): Promise<
+  | {
+      result: SteamHistoryResult[];
+      proxy?: Proxy;
+      lastProxyDuration: number;
+    }
+  | undefined
+> => {
   const encoded = encodeURIComponent(marketHashName);
-  let proxy = await proxyRotationHandler.getCurrentProxy();
+  let proxy = proxyRotationHandler
+    ? await proxyRotationHandler.getCurrentProxy()
+    : undefined;
 
   while (true) {
     let lastProxyDuration = Date.now();
-    const response = await requestWithTimeout(proxy, encoded).catch(() => {
+    const response = await requestWithTimeout(encoded, proxy).catch(() => {
       // general api error throw, just skip because it's probably something wrong with proxy
     });
 
@@ -29,14 +34,16 @@ export const fetchItemHistory = async (
 
     if (!response) {
       // no result so just skip
-      proxy = await proxyRotationHandler.getNewProxy();
+      proxy =
+        proxyRotationHandler && (await proxyRotationHandler.getNewProxy());
       continue;
     }
 
     const { data: result, statusCode } = response;
 
     if (statusCode === 429 || statusCode === 503 || statusCode === 502) {
-      proxy = await proxyRotationHandler.getNewProxy();
+      proxy =
+        proxyRotationHandler && (await proxyRotationHandler.getNewProxy());
       continue;
     }
 
@@ -52,7 +59,8 @@ export const fetchItemHistory = async (
         return { result: [], proxy, lastProxyDuration };
       }
       // this happens if rate limited proxy, or just returns gibberish, so skip.
-      proxy = await proxyRotationHandler.getNewProxy();
+      proxy =
+        proxyRotationHandler && (await proxyRotationHandler.getNewProxy());
       continue;
     }
 
@@ -65,11 +73,11 @@ export const fetchItemHistory = async (
 };
 
 const requestWithTimeout = (
-  proxy: Proxy,
-  parameter: string
+  parameter: string,
+  proxy?: Proxy
 ): Promise<HttpResult> => {
   return new Promise((resolve, reject) => [
-    timeout(makeRequestWithProxy(proxy, parameter), 10_000)
+    timeout(makeRequestWithProxy(parameter, proxy), 10_000)
       .then((result) => resolve(result))
       .catch((error) => {
         reject(error);
@@ -78,10 +86,12 @@ const requestWithTimeout = (
 };
 
 async function makeRequestWithProxy(
-  proxy: Proxy,
-  parameter: string
+  parameter: string,
+  proxy?: Proxy
 ): Promise<HttpResult> {
-  const agent =
+  const agent: SocksProxyAgent | HttpsProxyAgent | undefined = undefined;
+
+  if (proxy) {
     proxy.protocol === "socks4"
       ? new SocksProxyAgent({
           hostname: proxy.ip,
@@ -93,6 +103,7 @@ async function makeRequestWithProxy(
           port: proxy.port,
           protocol: "http",
         });
+  }
 
   const userAgent = randomUseragent.getRandom();
 
