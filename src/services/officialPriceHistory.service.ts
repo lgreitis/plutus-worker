@@ -1,11 +1,7 @@
 import { Item, Prisma } from "@prisma/client";
-import { HttpsProxyAgent } from "https-proxy-agent";
-import https from "node:https";
-import { timeout } from "promise-timeout";
-import randomUseragent from "random-useragent";
-import { SocksProxyAgent } from "socks-proxy-agent";
 import prisma from "src/config/prisma";
-import { HttpResult, Proxy, SteamHistoryResult } from "src/types";
+import { Proxy, SteamHistoryResult } from "src/types";
+import { makeProxyRequest } from "src/utils/proxyRequest";
 import ProxyRotationHandler from "src/utils/proxyRotationHandler";
 
 export const fetchItemHistory = async (
@@ -26,7 +22,13 @@ export const fetchItemHistory = async (
 
   while (true) {
     let lastProxyDuration = Date.now();
-    const response = await requestWithTimeout(encoded, proxy).catch(() => {
+    const response = await makeProxyRequest(
+      {
+        path: `/market/listings/730/${encoded}`,
+        referer: "https://steamcommunity.com/market/",
+      },
+      proxy
+    ).catch(() => {
       // general api error throw, just skip because it's probably something wrong with proxy
     });
 
@@ -54,7 +56,9 @@ export const fetchItemHistory = async (
       if (
         result.includes(
           "There is no price history available for this item yet."
-        )
+        ) ||
+        result.includes("Waiting for new activity...") ||
+        result.includes("There are no listings for this item.")
       ) {
         return { result: [], proxy, lastProxyDuration };
       }
@@ -71,76 +75,6 @@ export const fetchItemHistory = async (
     return { result: extracted, proxy, lastProxyDuration };
   }
 };
-
-const requestWithTimeout = (
-  parameter: string,
-  proxy?: Proxy
-): Promise<HttpResult> => {
-  return new Promise((resolve, reject) => [
-    timeout(makeRequestWithProxy(parameter, proxy), 10_000)
-      .then((result) => resolve(result))
-      .catch((error) => {
-        reject(error);
-      }),
-  ]);
-};
-
-async function makeRequestWithProxy(
-  parameter: string,
-  proxy?: Proxy
-): Promise<HttpResult> {
-  let agent: SocksProxyAgent | HttpsProxyAgent | undefined;
-
-  if (proxy) {
-    agent =
-      proxy.protocol === "socks4"
-        ? new SocksProxyAgent({
-            hostname: proxy.ip,
-            port: proxy.port,
-            protocol: proxy.protocol,
-          })
-        : new HttpsProxyAgent({
-            host: proxy.ip,
-            port: proxy.port,
-            protocol: "http",
-          });
-  }
-
-  const userAgent = randomUseragent.getRandom();
-
-  const options = {
-    hostname: "steamcommunity.com",
-    path: `/market/listings/730/${parameter}`,
-    method: "GET",
-    agent: agent,
-    headers: {
-      Host: "steamcommunity.com",
-      Referer: "https://steamcommunity.com/market/",
-      "User-Agent": userAgent,
-    },
-  };
-
-  return new Promise<HttpResult>((resolve, reject) => {
-    const request = https.get(options, (result) => {
-      let data = "";
-      result.on("data", (chunk) => {
-        data += chunk;
-      });
-      result.on("end", () => {
-        resolve({ data, statusCode: result.statusCode });
-      });
-      result.on("error", (error) => {
-        reject(error);
-      });
-    });
-
-    request.on("error", (error) => {
-      reject(error);
-    });
-
-    request.end();
-  });
-}
 
 export const officialPriceHistoryToDatabase = async (
   data: SteamHistoryResult[],

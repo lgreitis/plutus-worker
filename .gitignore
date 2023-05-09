@@ -2,4 +2,7 @@ dist
 node_modules
 logs
 .env
+.env.test
 .react-email
+coverage
+.DS_Store

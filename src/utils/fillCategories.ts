@@ -5,7 +5,7 @@ import prisma from "src/config/prisma";
 type GeneralizedResponse = { name: string; weapon: string }[];
 
 // This is used to manually fill item types of items
-const main = async () => {
+export const fillItemCategories = async () => {
   const items = await prisma.item.findMany();
 
   const skins = await axios.get<GeneralizedResponse>(
@@ -30,7 +30,7 @@ const main = async () => {
     "https://bymykel.github.io/CSGO-API/api/en/music_kits.json"
   );
 
-  for (const [index, item] of items.entries()) {
+  for await (const [, item] of items.entries()) {
     let type: ItemType = "Other";
 
     if (
@@ -85,13 +85,10 @@ const main = async () => {
     }
 
     await prisma.item.update({
-      where: { marketHashName: item.marketHashName },
+      where: { id: item.id },
       data: { type: type },
     });
-    console.log(`${item.marketHashName}: ${type}, ${index}/${items.length}`);
   }
-
-  console.log("done");
 };
 
 const trimName = (name: string) => {
@@ -103,17 +100,6 @@ const trimName = (name: string) => {
     .replace("(Well-Worn)", "")
     .replace("(Battle-Scarred)", "")
     .replace("StatTrak™", "")
-    .replace("M4A1-S", "M4A4")
     .replace("Souvenir", "")
     .trim();
 };
-
-main()
-  .then(async () => {
-    await prisma.$disconnect();
-  })
-  .catch(async (error) => {
-    console.error(error);
-    await prisma.$disconnect();
-    process.exit(1);
-  });

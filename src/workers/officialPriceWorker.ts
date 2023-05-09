@@ -2,12 +2,12 @@ import { Job, Worker } from "bullmq";
 import { formatDuration, intervalToDuration } from "date-fns";
 import prisma from "src/config/prisma";
 import { FETCH_PROXY_STRING } from "src/constants";
-import { createItemStatistics } from "src/services/itemStatisticsService";
+import { createItemStatistics } from "src/services/itemStatistics.service";
 import {
   fetchItemHistory,
   officialPriceHistoryToDatabase,
-} from "src/services/officialPriceHistoryService";
-import { createOptimizedTableEntries } from "src/services/optimizedItemService";
+} from "src/services/officialPriceHistory.service";
+import { createOptimizedTableEntries } from "src/services/optimizedItem.service";
 import { OfficialPricePoolData } from "src/types";
 import ProxyRotationHandler from "src/utils/proxyRotationHandler";
 import { createStatisticEntry } from "src/utils/statistics";
