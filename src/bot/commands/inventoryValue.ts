@@ -36,6 +36,8 @@ export const inventoryValue: SlashCommand = {
       return;
     }
 
+    await interaction.deferReply();
+
     const mentionedUserUsername =
       interaction.options.get("user")?.user?.username;
 
@@ -101,7 +103,7 @@ export const inventoryValue: SlashCommand = {
       where: { conversionCurrency: user.currency },
     });
 
-    interaction.reply({
+    interaction.editReply({
       embeds: [
         new EmbedBuilder()
           .setAuthor({ name: "Plutus" })

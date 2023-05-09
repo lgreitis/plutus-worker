@@ -16,6 +16,8 @@ export const itemValue: SlashCommand = {
     })
     .setDescription("Shows information about an item"),
   execute: async (interaction) => {
+    await interaction.deferReply();
+
     const user = await prisma.user.findFirst({
       where: {
         accounts: {
@@ -42,8 +44,6 @@ export const itemValue: SlashCommand = {
 
       return;
     }
-
-    await interaction.deferReply();
 
     const items = await prisma.item.findMany();
     const result = search(itemName, items, {
